@@ -59,7 +59,7 @@ Turtle::Turtle(rclcpp::Node::SharedPtr& nh, const std::string& real_name, const 
 {
   pen_.setWidth(3);
 
-  rclcpp::QoS qos(rclcpp::KeepLast(7));
+  rclcpp::QoS qos(rclcpp::QoS(7).best_effort());
   velocity_sub_ = nh_->create_subscription<geometry_msgs::msg::Twist>(real_name + "/cmd_vel", qos, std::bind(&Turtle::velocityCallback, this, std::placeholders::_1));
   pose_pub_ = nh_->create_publisher<turtlesim::msg::Pose>(real_name + "/pose", qos);
   color_pub_ = nh_->create_publisher<turtlesim::msg::Color>(real_name + "/color_sensor", qos);
@@ -94,6 +94,8 @@ void Turtle::velocityCallback(const geometry_msgs::msg::Twist::SharedPtr vel)
   lin_vel_x_ = vel->linear.x;
   lin_vel_y_ = vel->linear.y;
   ang_vel_ = vel->angular.z;
+
+  RCLCPP_INFO(nh_->get_logger(), "subscribed Twist msg from mros2");
 
   // Abort any active action
   if (rotate_absolute_goal_handle_)
