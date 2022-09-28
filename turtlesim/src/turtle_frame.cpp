@@ -38,7 +38,7 @@
 #define DEFAULT_BG_G 0x56
 #define DEFAULT_BG_B 0xff
 
-namespace turtlesim
+namespace mturtlesim
 {
 
 TurtleFrame::TurtleFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* parent, Qt::WindowFlags f)
@@ -49,7 +49,7 @@ TurtleFrame::TurtleFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* parent, 
 , id_counter_(0)
 {
   setFixedSize(500, 500);
-  setWindowTitle("TurtleSim");
+  setWindowTitle("mturtlesim");
 
   srand(time(NULL));
 
@@ -85,7 +85,7 @@ TurtleFrame::TurtleFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* parent, 
   turtles.append("eloquent.png");
   turtles.append("foxy.png");
 
-  QString images_path = (ament_index_cpp::get_package_share_directory("turtlesim") + "/images/").c_str();
+  QString images_path = (ament_index_cpp::get_package_share_directory("mturtlesim") + "/images/").c_str();
   for (int i = 0; i < turtles.size(); ++i)
   {
     QImage img;
@@ -99,14 +99,14 @@ TurtleFrame::TurtleFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* parent, 
 
   clear_srv_ = nh_->create_service<std_srvs::srv::Empty>("clear", std::bind(&TurtleFrame::clearCallback, this, std::placeholders::_1, std::placeholders::_2));
   reset_srv_ = nh_->create_service<std_srvs::srv::Empty>("reset", std::bind(&TurtleFrame::resetCallback, this, std::placeholders::_1, std::placeholders::_2));
-  spawn_srv_ = nh_->create_service<turtlesim::srv::Spawn>("spawn", std::bind(&TurtleFrame::spawnCallback, this, std::placeholders::_1, std::placeholders::_2));
-  kill_srv_ = nh_->create_service<turtlesim::srv::Kill>("kill", std::bind(&TurtleFrame::killCallback, this, std::placeholders::_1, std::placeholders::_2));
+  spawn_srv_ = nh_->create_service<mturtlesim::srv::Spawn>("spawn", std::bind(&TurtleFrame::spawnCallback, this, std::placeholders::_1, std::placeholders::_2));
+  kill_srv_ = nh_->create_service<mturtlesim::srv::Kill>("kill", std::bind(&TurtleFrame::killCallback, this, std::placeholders::_1, std::placeholders::_2));
 
   rclcpp::QoS qos(rclcpp::KeepLast(100), rmw_qos_profile_sensor_data);
   parameter_event_sub_ = nh_->create_subscription<rcl_interfaces::msg::ParameterEvent>(
     "/parameter_events", qos, std::bind(&TurtleFrame::parameterEventCallback, this, std::placeholders::_1));
 
-  RCLCPP_INFO(nh_->get_logger(), "Starting turtlesim with node name %s", nh_->get_node_names()[0].c_str());
+  RCLCPP_INFO(nh_->get_logger(), "Starting mturtlesim with node name %s", nh_->get_node_names()[0].c_str());
 
   width_in_meters_ = (width() - 1) / meter_;
   height_in_meters_ = (height() - 1) / meter_;
@@ -130,7 +130,7 @@ TurtleFrame::~TurtleFrame()
   delete update_timer_;
 }
 
-bool TurtleFrame::spawnCallback(const turtlesim::srv::Spawn::Request::SharedPtr req, turtlesim::srv::Spawn::Response::SharedPtr res)
+bool TurtleFrame::spawnCallback(const mturtlesim::srv::Spawn::Request::SharedPtr req, mturtlesim::srv::Spawn::Response::SharedPtr res)
 {
   std::string name = spawnTurtle(req->name, req->x, req->y, req->theta);
   if (name.empty())
@@ -144,7 +144,7 @@ bool TurtleFrame::spawnCallback(const turtlesim::srv::Spawn::Request::SharedPtr 
   return true;
 }
 
-bool TurtleFrame::killCallback(const turtlesim::srv::Kill::Request::SharedPtr req, turtlesim::srv::Kill::Response::SharedPtr)
+bool TurtleFrame::killCallback(const mturtlesim::srv::Kill::Request::SharedPtr req, mturtlesim::srv::Kill::Response::SharedPtr)
 {
   M_Turtle::iterator it = turtles_.find(req->name);
   if (it == turtles_.end())
@@ -277,14 +277,14 @@ void TurtleFrame::updateTurtles()
 
 bool TurtleFrame::clearCallback(const std_srvs::srv::Empty::Request::SharedPtr, std_srvs::srv::Empty::Response::SharedPtr)
 {
-  RCLCPP_INFO(nh_->get_logger(), "Clearing turtlesim.");
+  RCLCPP_INFO(nh_->get_logger(), "Clearing mturtlesim.");
   clear();
   return true;
 }
 
 bool TurtleFrame::resetCallback(const std_srvs::srv::Empty::Request::SharedPtr, std_srvs::srv::Empty::Response::SharedPtr)
 {
-  RCLCPP_INFO(nh_->get_logger(), "Resetting turtlesim.");
+  RCLCPP_INFO(nh_->get_logger(), "Resetting mturtlesim.");
   turtles_.clear();
   id_counter_ = 0;
   spawnTurtle("", width_in_meters_ / 2.0, height_in_meters_ / 2.0, 0);
