@@ -77,7 +77,7 @@ private:
   bool spawnCallback(const mturtlesim::srv::Spawn::Request::SharedPtr, mturtlesim::srv::Spawn::Response::SharedPtr);
   bool killCallback(const mturtlesim::srv::Kill::Request::SharedPtr, mturtlesim::srv::Kill::Response::SharedPtr);
 
-  void parameterEventCallback(const rcl_interfaces::msg::ParameterEvent::SharedPtr);
+  void parameterEventCallback(const rcl_interfaces::msg::ParameterEvent::ConstSharedPtr);
 
   rclcpp::Node::SharedPtr nh_;
 

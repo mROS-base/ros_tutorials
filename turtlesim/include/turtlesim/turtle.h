@@ -65,7 +65,7 @@ public:
   bool update(double dt, QPainter& path_painter, const QImage& path_image, qreal canvas_width, qreal canvas_height);
   void paint(QPainter &painter);
 private:
-  void velocityCallback(const geometry_msgs::msg::Twist::SharedPtr vel);
+  void velocityCallback(const geometry_msgs::msg::Twist::ConstSharedPtr vel);
   bool setPenCallback(const mturtlesim::srv::SetPen::Request::SharedPtr, mturtlesim::srv::SetPen::Response::SharedPtr);
   bool teleportRelativeCallback(const mturtlesim::srv::TeleportRelative::Request::SharedPtr, mturtlesim::srv::TeleportRelative::Response::SharedPtr);
   bool teleportAbsoluteCallback(const mturtlesim::srv::TeleportAbsolute::Request::SharedPtr, mturtlesim::srv::TeleportAbsolute::Response::SharedPtr);
